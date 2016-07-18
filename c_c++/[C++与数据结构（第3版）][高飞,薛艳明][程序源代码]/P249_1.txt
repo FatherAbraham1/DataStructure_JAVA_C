@@ -1,0 +1,150 @@
+#include <iostream>
+using namespace std;
+const int MaxVerSize =10;		//图最大顶点数
+const int MaxEdgeSize = 50;       	//最大边数
+template < class T > 
+struct Edge                          	//边结点定义
+  {  int dest;                       	//表示与顶点vi接的边上另一个顶点在图中的位置
+	  T cost;                           	//边上的权值等
+	  Edge < T > *next;             	//与vi邻接的下一条边的顶点所对应的指针
+  };
+template < class T,class VerType > 
+struct Vertex   					//表头结点定义
+  {  VerType data; 				//存放顶点的编号、名称或其他有关信息
+	  Edge < T > *link;         		//指向顶点vi的第一个邻接点
+  };
+template < class T,class VerType >
+class Graph
+  {  private:
+		Vertex < T,VerType > *vex;  	//定义顶点向量表
+		int curNum;                    	//当前图中的顶点数
+		int vern;                      	//给定图的顶点数
+		int edgen;                    	//当前图中的边数
+		int mark;                     	//mark＝1，表示是有向图；mark＝0，表示是无向图
+	 public:
+		Graph();
+		Graph(int sn,int se,int m = 0); 		//初始化图
+		～Graph();
+ 	virtual void InserEdge(const int v1,int v2,T weight); //插入权值为weight
+ 														的边(v1，v2）
+		void DeleteEdge(const int v1,const int v2);         	//删除边（v1,v2）
+		int GetNumVtx(){ return curNum;}                       	//返回当前顶点数
+		int GetNumEdge(){return edgen;}                         	//返回当前边数
+		VerType GetData(int i){return vex[i].data;}          	//返回顶点i的信息
+		friend istream &operator >>(istream &in,Graph < T,VerType > &g);
+   	friend ostream &operator <<(ostream &out,Graph < T,VerType > &g);
+  };
+template < class T,class VerType >                      		//无参构造函数
+Graph < T,VerType >::Graph ()
+  { curNum = 0;
+	  vern = 0;
+	  edgen = 0;
+	  mark = 0;
+  }
+template < class T,class VerType >    		//带参数的构造函数
+Graph < T,VerType >::Graph(int sn,int se,int m)
+  {  curNum = sn;
+	  vern = sn;
+	  edgen = se;
+	  mark = m;
+	  vex = new Vertex < T,VerType > [vern];
+  }
+template < class T,class VerType >          	//析构函数
+Graph < T,VerType >::～Graph()
+  { for(int i = 0;i < vern;i++)
+	     {  Edge < T > *p = vex[i].link;
+		   while(p!= NULL)   						//删除以vex[i]为头结点的单链表
+		     {  vex[i].link = p -> next;			//头指针指向下一个结点
+			   delete p;                            	//删除前一个结点
+			   p = vex[i].link;                    	//p指向当前第一个结点
+		     }
+	     }
+	 delete [ ]vex;
+  }
+template < class T,class VerType >      		//插入一条边
+void Graph < T,VerType >::InserEdge(const int v1,const v2,T weight)
+  {  if(v1!= -1&&v2!= -1)             			//v1，v2是图中的顶点时，插入一条边
+	    {  Edge < T > *p = vex[v1].link;        	//寻找与v1邻接的第一个顶点地址
+		   Edge < T > *newNode = new Edge < T >;	//增加一个新的边结点
+		   vex[v1].link = newNode;  				//v2插入作为v1的第一个邻接边
+		   newNode-> next = p;
+		   newNode-> cost = weight;                 	//设置新结点的信息
+		   newNode-> dest = v2;
+		   edgen = edgen+1;                         	//边数加1
+	  }
+}
+template < class T,class VerType >            	//删除一条边
+void Graph < T,VerType >::DeleteEdge(const int v1,const int v2)
+  {  if(v1!=-1&&v2!=-1)                      		//v1，v2是图中的顶点
+	    {  Edge < T > *p = vex[v1].link,*pre = p;	//寻找与v1邻接的第一个顶点地址
+		   if(p->des t== v2)             			//要删除的是第一条邻接边
+		     {  vex[v1].link = p->next;
+			    delete p;
+			    edgen--;                			//边数减1
+		     }
+		  else 								//否则，寻找与v1邻接的顶点v2的地址
+		    {  while(p!= NULL)
+			    { if(p->dest == v2)
+				    {  pre->next = p->next;
+					   delete p;
+					   break;
+					   edgen--;
+				     }
+				   else {pre = p;p = p->next;}
+			    }
+		     }
+	   }
+}
+template < class T,class VerType >       	//输入流运算符重载
+istream &operator >>(istream &in,Graph < T,VerType > &g)
+  {  cout <<"Please input the info of the graph"<< endl;
+	  cout <<"请输入顶点信息:"<< endl;
+	  for(int i = 0;i < g.vern;i++)
+	   {  cin >> g.vex[i].data;
+		  g.vex[i].link = NULL;
+	   }
+	 cout <<"请输入边信息(位置，权值，以-1结束):”<< endl;
+	 int d,c;
+	 for(i = 0;i < g.vern;i++)      		//依次输入各个邻接边顶点的位置和权值
+	    {  cout<<"第"<<i+1<<"顶点:";		//输入第一个邻接的位置，如果没有邻接点，输入-1
+		   in >> d;                    		//输入邻接点的位置
+		   while(d!= -1)
+		    {  in >> c;          			//输入邻接边的权值
+			   g.InserEdge(i,d,c);  		//插入一个边结点
+			   in >> d;
+		    }
+	     }
+	   return in;
+}
+template < class T,class VerType >	//输出流运算符重载
+ostream &operator <<(ostream &out,Graph < T,VerType > &g)
+  {  out <<"输出图信息:"<< endl;
+	  for(int i = 0;i < g.vern;i++)
+	    {  out << g.vex[i].data <<"  ";
+	 	   Edge < T > *p = g.vex[i].link;
+		   while(p!= NULL)
+		      if(g.mark == 0)
+		        { out <<"("<< I <<","<< p->dest <<")"<< p->cost <<"  ";
+				   p = p->next;
+			     }
+			   else
+				  out <<"<"<<i<<","<<p->dest<<">="<<p->cost<< endl;
+			out << endl;
+	     }
+	  return out;
+  }
+void main()                        		//测试主函数
+  {  Graph < int,char > G3(4,4,0);    	//定义一个有4条边的图
+	  int v,e;
+	  cin >> G3;                            	//输入顶点及边的信息
+	  cout << G3;                           	//输出
+	  v = G3.GetNumVtx();                   	//取图的顶点数
+	  e = G3.GetNumEdge();                  	//取图的边数
+	  cout <<"图G3有"<< v <<"个顶点,有"<< e <<"条边。"<< endl;
+	  cout <<"\n在B,C顶点间加条边(B->C),权值为10:"<< endl;
+	  G3.InserEdge(1,2,10);      			//插入边
+	  cout << G3;
+	  cout <<"\n删除C,D顶点间边(C->D):"<< endl;
+	  G3.DeleteEdge(2,3);				//删除边
+	  cout << G3;
+}

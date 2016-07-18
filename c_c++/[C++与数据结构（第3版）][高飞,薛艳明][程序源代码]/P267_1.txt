@@ -1,0 +1,47 @@
+#include <iostream>
+using namespace std;
+class SeqSearch;
+class Node     								//定义数据表中结点类
+  {  friend class SeqSearch;
+	    int key;									//关键字域
+	    int other;    							//其他数据
+public:
+	    int getKey(){return key;}                  	//读取关键字
+	    void setKye(int k){key = k;}            	//修改关键字
+  };
+class SeqSearch      							//定义数据表查找类
+  {	    Node *Element; 						//数据表中存储数据的数组
+	    int ArraySize,CurrentSize;         		//数组最大长度和长度
+public:
+    SeqSearch(int sz){Element = new Node[sz];}//构造函数
+	    ~SeqSearch(){delete []Element;}			//析构函数
+	    void InList();                            		//建立数据表
+	    int Search(int x);                         	//查找关键字
+  };
+void SeqSearch::InList()
+  {	  cout <<"请输入数据个数:";
+	  cin >> CurrentSize; 						//输入表当前长度
+	  cout <<"请输入数据:"<< endl;
+	  for(int i = 0;i < CurrentSize;i++)
+		 cin >> Element[i].key;					//输入数据
+  }
+int SeqSearch: :Search(int x)
+  {	  Element[0].setKye(x);					//将x送0号位置设置监视哨
+	  int i = CurrentSize;
+     while(Element[i].getKey()!= x)i--;		//从后向前顺序查找
+	  if(i!=0)
+		  return i+1;
+	  else return 0;
+}
+const int Size =100;
+void main()
+  {	 int Target,Location;
+	  SeqSearch L(Size);  						//定义数据表
+	  L.InList(); 								//建立数据表
+	  cout <<"请输入要查找的关键字:";
+	  cin >> Target;                      			//输入要查找的关键字
+	  if((Location =L.Search(Target))!=0)  		//Location为查找到的位置
+    	cout <<"关键字所在位置:"<< Location << endl;
+	  else
+		cout <<"没有找到！"<< endl;
+}

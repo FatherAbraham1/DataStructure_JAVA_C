@@ -1,0 +1,116 @@
+#include <iostream>
+using namespace std;
+const int MaxVerSize = 10;			//图最大顶点数
+const int MaxEdgeSize = 50;    		//最大边数
+template < class T >
+struct Edge                              	//边结点定义
+  {
+		//同上题
+  };
+template < class T,class VerType >
+struct Vertex        					//表头结点定义
+  {
+		//同上题
+  };
+template < class T,class VerType >
+class Graph
+  { private:
+		  Vertex < T,VerType > *vex;   	//定义顶点向量表
+		  int curNum;                        	//当前图中的顶点数
+		  int vern;                         	//给定图的顶点数
+		  int edgen;                     	//当前图中的边数
+		  int mark;                    	//mark＝1，表示是有向图；mark＝0，表示是无向图
+		  int *visited;                	//存放访问标志
+	  public:
+		  Graph();
+		  Graph(int sn,int se,int m = 0);//初始化图
+		  ～Graph();
+		 //插入权值为weight的边（v1,v2）
+virtual void InserEdge(const int v1,int v2,T weight);
+		 int GetFirstEdge(const int v);	//寻找v的第一个邻接点的位置
+		  //寻找v的当前邻接点v1的下一个邻接点的位置
+int GetNextEdge(const int v,int v1); 
+		  int GetNumVex(){ return curNum;}      	//返回当前顶点数
+		  int GetNumEdge(){return edgen;}      	//返回当前边数
+	      void DFS();
+		  void DFS(int v);
+		  VerType GetData(int i){return vex[i].data;}  	//返回顶点i的信息
+		  friend istream &operator >>(istream &in,Graph < T,VerType > &g);
+         friend ostream &operator <<(ostream &out,Graph < T,VerType > &g);
+  };
+template < class T,class VerType >                  	//无参构造函数
+Graph < T,VerType >::Graph()
+  {
+		//同上题
+  }
+template < class T,class VerType >               	//带参数的构造函数
+Graph < T,VerType >::Graph(int sn,int se,int m)
+  {
+	//同上题
+  }
+template < class T,class VerType >                  	//析构函数
+Graph < T,VerType >::～Graph()
+  {
+		//同上题
+  }
+//寻找v的第一个邻接点的位置
+template < class T,class VerType >
+int Graph < T,VerType >::GetFirstEdge(const int v)
+  {	 if(v!= -1)
+	        {  Edge < T > *p = vex[v].link;
+		      if(p!=NULL) return p->dest;
+	        }
+	 	return –1;    								//没有邻接点，返回-1
+  }
+template < class T,class VerType >                 	//获取下一个邻接点
+int Graph < T,VerType >::GetNextEdge(const int v,const int v1)
+  { if(v!= -1&&v1!= -1)
+	       {  Edge < T > *p = vex[v].link;
+		     while(p!=NULL)
+			  if(p->dest == v1&&p->next!=NULL)
+				return p->next->dest;
+			  else p = p->next;
+	       }
+		return –1;
+  }
+template < class T,class VerType > 				//插入一条边
+void Graph < T,VerType >::InserEdge(const int v1,const v2,T weight)
+  {
+		//同上题
+  }
+template < class T,class VerType >         		//深度优先搜索（主过程）
+void Graph < T,VerType >::DFS()
+  {	 int n;
+	   	 n = GetNumVex();       						//取顶点个数
+	  	 visited = new int[n];   					//根据顶点个数创建辅助数组
+	 	 for(int i = 0;i < n;i++)visited[i] = 0; 	//辅助数组初始化
+	  	 DFS(0);										//从顶点0开始深度优先搜索
+	 	 delete []visited;
+  }
+template < class T,class VerType >  				//深度优先搜索（子过程）
+void Graph < T,VerType >::DFS(int v)
+  {	 cout << GetData(v)<<"";       				//访问该顶点的数据
+ 	 visited[v] = 1;      						//访问标志改为访问过
+ 	 int w = GetFirstEdge(v);     				//找顶点v的第一个邻接顶点w
+ 	 while(w!= -1)       							//有邻接顶点
+ 	   {  if(!visited[w])DFS(w);   				//若未访问过，从w递归访问
+		   	  w = GetNextEdge(v,w);
+	        }
+  }
+template < class T,class VerType >              	//输入流运算符重载
+istream &operator >>(istream &in,Graph < T,VerType > &g)
+  {
+	//同上题
+  }
+template < class T,class VerType >  				//输出流运算符重载
+ostream &operator <<(ostream &out,Graph < T,VerType > &g)
+  {
+		//同上题
+  }
+void main()         								//测试主函数
+  {	 Graph < int,char > G3(4,4,0);   				//定义一个无向图
+ 	 cin >> G3;                               		//输入顶点及边的信息
+ 	 cout <<"深度遍历:";
+ 	 G3.DFS();
+ 	 cout << endl;
+}

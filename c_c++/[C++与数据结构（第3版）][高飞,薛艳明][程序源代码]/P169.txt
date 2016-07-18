@@ -1,0 +1,71 @@
+#include <iostream>
+using namespace std;
+#include"stdlib.h"
+#include"time.h"
+typedef int ElemType;
+class SeqStack
+ 	{	   unsigned height;     	//栈高
+ 		   int top;				//栈顶指针
+ 		   ElemType *elements; 	//一维数组指针，用于存放栈中元素
+ 		   int maxsize; 			//栈的最大栈高
+ 	public:
+ 		   SeqStack(int size);	//构造函数，size用来设置栈的大小
+ 		   ~SeqStack(){delete []elements;}	//析构函数
+ 		   void PushStack(ElemType x);     	//进栈函数，将元素x压入栈中
+ 		   ElemType  PopStack(ElemType x);	//出栈函数，将栈顶元素值放入x中
+ 		   void ClearStack(){top = -1;}    	//清栈函数，用于释放栈所占的内存空间
+ 		   bool IsFullStack(){return top == maxsize-1;}	//判断栈是否为满
+ 		   bool IsEmptyStack();        		//判断栈是否为空
+ 		   void PrintStack();   				//将栈中元素输入到屏幕上
+ 	};
+SeqStack::SeqStack(int size)
+ 	{	  height = 0;
+ 		  top = -1;
+ 		  maxsize = size;    					//最大栈高
+ 		  elements = new ElemType[size];
+ 	}
+void SeqStack::PushStack(ElemType x)    	//进栈函数
+ 	{	  if(IsFullStack())
+ 			 cout <<"栈已满！";
+ 		  else
+ 		   {  elements[++top] = x;
+ 		      height++;
+ 		   }
+ 	}
+ElemType SeqStack::PopStack(ElemType x) 	//出栈函数
+ 	{	  x = elements[top];
+ 		  top--;
+ 		  height--;
+ 		  return x;
+ 	}
+bool SeqStack::IsEmptyStack()      			//判断栈是否为空
+ 	{	 return(height == 0)? true:false;}
+void SeqStack::PrintStack()				//将栈中元素输入到屏幕上
+ 	{	  while(IsEmptyStack()== false)
+ 		    {  cout << elements [top] <<"  ";
+ 			   top--;
+ 			   height--;
+ 		    }
+ 		   cout << endl;
+ 	}
+void main()
+ 	{	 int n;
+ 		 ElemType m;	
+ 		 cout <<"请输入随机数个数:";
+ 		 cin >> n;
+ 		 srand(time(NULL));
+ 	    SeqStack p(n),q(n);
+ 		 cout <<"随机数为:";
+ 		 for(int i = 0;i < n;i++)
+ 		  {	m = rand()%100;
+ 			cout << m <<" ";
+ 		if(m % 2 == 0)
+ 		       p.PushStack(m);
+ 		   else q.PushStack (m);
+ 		  }
+ 		cout << endl;
+ 		cout <<"偶数:"<< endl;
+ 		p.PrintStack();
+ 		cout <<"奇数为:"<< endl;
+ 		q.PrintStack();
+ 	}

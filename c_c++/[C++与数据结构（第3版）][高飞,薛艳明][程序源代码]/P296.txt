@@ -1,0 +1,151 @@
+#include <iostream>
+using namespace std;
+#define MaxSize 100
+typedef int DataType;
+class SeqList
+  {	    DataType list[MaxSize];
+	    int length;
+   public:
+	    SeqList(){length = 0;}
+	    void SLCreat(int n);                        	//创建顺序表
+   	 void InsSort();                             	//直接插入排序
+       void ShellSort();                         	//希尔排序
+	    void SelectSort();                           	//简单选择排序
+	    void BubbleSort();                           	//冒泡排序
+	    void QuickSort();                             	//快速排序
+	    void QuickSort(int low,int high);          	//快速排序
+	    int partition(int i,int j);
+	    void SLPrint();                              	//将顺序表显示在屏幕上
+  };
+void SeqList::SLCreat(int n);				//创建顺序表
+  {	  DataType x;
+	  length = 0;
+	  cout <<"请输入数据元素值: ";
+	  for(int i = 0;i < n;i++)
+	   {  cin >> x;
+		 list[i] = x;
+		 length++;
+	   }
+}
+void SeqList::InsSort()                 		//直接插入排序
+  {	  SLCreat(5);
+	  DataType x;
+	  int i,j;
+	  for(i = 0;i < length;i++)
+	   {  x = list[i];
+		  for(j = i-1;j >= 0;j--)
+			if(x < list[j])list[j+1] = list[j];
+			else 	break;
+		  list[j+1] = x;
+	   }
+	  cout <<"直接插入排序结果:";
+     SLPrint();
+  }
+void SeqList::ShellSort()         		//希尔排序
+  {	  SLCreat(5);
+	  DataType x;
+	  int I,j,d,n;
+	  n = length;
+	  for(d = n/2;d >= 1;d/= 2)           	//按不同分量进行排序
+	    { for(i = d;i < n;i++)      		//将list[i]元素直接插入到对应分组的有序表中
+		    { x = list[i];
+			   for(j = I-d;j >= 0;j-= d)
+			    {  if(x < list[j])list [j+d] = list[j];
+				   else    break;
+			    }
+			  list[j+d] = x;
+		   }
+	    }
+	   cout <<"希尔排序结果:";
+	   SLPrint();
+}
+void SeqList::SelectSort()       	//简单选择排序
+  {	  SLCreat(5);
+	  DataType x;
+	  int i,j,k;
+	  for(i = 0;i < length;I++)
+	   { k = i;           		//用保存当前得到的最小排序码元素的下标，初值为i
+		 for(j = i+1;j < length;j++)
+		              			//从当前排序区间中顺序查找出具有最小排序码的元素list[k]
+			  if(list[j]<list[k])k = j;
+		 if(k!=i)             	//把list[k]对调到该排序区间的第一个位置
+		   {  x = list[i];
+			  list[i] = list[k];
+			  list[k] = x;
+		   }
+   }  
+	  cout <<"简单选择排序结果: ";
+	  SLPrint();
+}
+void SeqList::BubbleSort()		//冒泡排序
+  {	  SLCreat(5);
+	  DataType x;
+	  int i,j,flag;
+	  for(i = 1;i < length-1;i++)
+	   {  flag = 0;
+		  for(j = length-1;j >= i;j--)
+			if(list[j] < list[j-1])
+			  {	  x = list[j-1];
+			     list[j-1] = list[j];
+			     list[j] = x;
+				  flag = 1;
+			 }
+		  if(flag == 0)return;
+	  }
+	 cout <<"冒泡排序结果:";
+	 SLPrint();
+}
+void SeqList::QuickSort()  					//快速排序
+  {	  SLCreat(5);
+	  QuickSort(0,4);
+	  cout <<"快速排序结果:";
+	  SLPrint();
+  }
+void SeqList::QuickSort(int low,int high)	//快速排序
+  {	  int pos;
+	  if(low < high)
+	   {  pos = partition(low,high);
+		 QuickSort(low,pos-1);
+		 QuickSort(pos+1,high);
+	  }
+}
+int SeqList::partition(int I,int j)
+  {	  DataType pivotkey;
+	  pivotkey = list[i];
+	  while(i < j)
+	   {  while(i < j&&list[j] >= pivotkey) --j;
+		  if(i < j)list[i++] = list[j];
+		  while(i < j&&list[i] <= pivotkey) ++i;
+		  if(i < j)list[j--] = list[i];
+	  }
+	 list[i] = pivotkey;
+	 return i;
+}
+void SeqList::SLPrint()                  		//将顺序表显示在屏幕上
+  {	  for(int i = 0;i < length;i++)
+		  cout << list[i] <<"";
+	  cout << endl;
+  }
+void main()
+  {  SeqList myList1,myList2,myList3,myList4,myList5;
+	  int ch,flag = 1;
+	  while(flag)
+	   {  cout << endl;
+		  cout <<"1.  直接插入排序\n";
+		  cout <<"2.  希尔排序\n";
+		  cout <<"3.  简单选择排序\n";
+		  cout <<"4.  冒泡排序\n";
+		  cout <<"5.  快速排序\n";
+		  cout <<"6.  退出\n";
+		  cout <<"请选择(1-6):";
+		  cin >> ch;
+		  switch(ch)
+		    { case 1:	myList1.InsSort();break;
+		      case 2:		myList2.ShellSort();break;
+		      case 3:		myList3.SelectSort();break;
+		      case 4:		myList4.BubbleSort();break;
+		      case 5: 	myList5.QuickSort();break;
+		      case 6: 	flag = 0;break;
+		   }
+	 }
+}

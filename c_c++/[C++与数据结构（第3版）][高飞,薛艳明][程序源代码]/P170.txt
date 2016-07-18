@@ -1,0 +1,70 @@
+#include <iostream>
+using namespace std;
+#define QUENESIZE  100
+class CirQueue
+ 	{	   int head;       		//队头指针
+ 		   int tail;        		//队尾指针
+ 		   int *elements;  		//存放队列元素的数组
+ 		   int maxsize;      		//队列最大可容纳的元素个数
+ 		   int qsize;       		//队列长度
+ 	public：
+ 		   CirQueue();
+ 		   ~CirQueue(){delete elements;}
+ 		   void PushTail(int &x);		//插入，将元素插入在队尾
+ 		   int PopFront(int &x);		//删除，从队头取一个元素
+ 		   void Clear(){head = tail;}	//清空队列
+ 		   void Put(int x){PushTail(x);}	//进队，将新元素插入在队尾
+ 		   void Get(int x){PopFront(x);}	//出队，从队头取一个元素
+ 		   void InQueue(int &item); 		//插入函数
+ 		   bool QueueIsFull(){return(tail+1)% maxsize == head;}  
+ 											//判断队列是否为满
+ 		   bool QueueIsEmpty(){return head == tail;}	//判断队列是否为空
+ 		   void Print();
+ 	};
+CirQueue：：CirQueue()
+ 	{	 head = tail = 0;     				//队列设置为空队列
+ 		 maxsize = QUENESIZE;
+ 		 qsize = 0;
+ 		 elements = new int [maxsize]; 		//给队列分配内存空间
+ 	}
+ 	void CirQueue：：PushTail(int &x)
+ 	{	 if(QueueIsFull())
+ 			cout <<"队列已满! "<< endl;
+ 		 else
+ 		  {	 tail =(tail+1)% maxsize;    		//尾指针加1
+ 			 elements[tail] = x;     			//给队尾赋值
+ 			 qsize++;      					//队长加1
+ 		 }
+ 	}
+int CirQueue::PopFront(int &x)
+ 	{	  if(QueueIsEmpty())
+ 		    {  cout <<"队列已空! "<< endl;
+ 			   return –1;
+ 		    }
+ 		  else
+ 		   {  head =(head+1)% maxsize;    	//头指针加1
+ 			  x = elements[head];
+ 			  qsize--;
+ 			  return x;
+ 		  }
+ 	}
+void CirQueue::Print()
+ 	{  int m,s = qsize;
+ 		 for(int i = 0;i < s;i++)
+ 		  {  m = PopFront(elements[i]);
+ 			 cout << m <<"  ";
+ 		  }
+ 		 cout << endl;
+ 	}
+void main()
+ 	{	 CirQueue cir;
+ 		 int i,x;
+ 	     cout <<"请输入数据:";
+ 		 for(i = 0;i < 5;i++)
+ 		  {	 cin >> x;
+ 			 cir.PushTail(x);
+ 		  }
+ 		 cout <<"队列中数据:";
+ 		 cir.Print();
+ 		 cout << endl;
+ 	}

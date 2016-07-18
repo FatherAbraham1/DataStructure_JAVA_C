@@ -1,0 +1,112 @@
+#include <iostream>
+using namespace std;
+class BinaryTree;
+class BinTreeNode							//二叉树结点类的定义
+  {	    int data;							//结点的数据域
+	    BinTreeNode *Lchild; 						//左孩子指针
+       BinTreeNode *Rchild;					//右孩子指针
+	    friend class BinaryTree;
+  public:
+	    BinTreeNode(){Lchild = Rchild = NULL;}
+  };
+class BinaryTree 							//二叉排序树类定义
+  {public:
+	    BinaryTree(){ Root = NULL;}   			//构造函数
+       BinTreeNode *GetRoot(){return Root;} 	//返回根结点指针
+       void CreatBst(int a[],int n);			//建立二叉排序树
+	   void Insert(int item);                 		//向二叉排序树中插入一个元素
+    void Insert(BinTreeNode *&Root,BinTreeNode *p);	//向二叉排序树中插入一个结点
+	    void PreOrder(){PreOrder(Root);}              	//前序遍历二叉排序树
+	    void PreOrder(BinTreeNode *current);         		//前序遍历以current为根的子树
+	    void InOrder();                                  	//中序遍历二叉排序树
+	    void InOrder(BinTreeNode *current);         		//中序遍历以current为根的子树
+	    void Print();
+  private:
+       BinTreeNode  *Root;
+  };
+//建立二叉排序树
+void BinaryTree::CreatBst(int a[ ],int n)
+  {	  for(int i = 0;i < n;i++)
+	    {  BinTreeNode *p = new BinTreeNode;
+	       p->data = a[i];
+		   Insert(Root,p);
+	   }
+}
+//向二叉排序树中插入一个结点
+void  BinaryTree::Insert(BinTreeNode * &Root,BinTreeNode *p)
+  {	   if(Root == NULL)
+		  Root = p;                    					//插入新结点
+	   else if(p->data < Root->data )
+		  Insert(Root->Lchild,p);                 		//向左子树中插入结点
+	  else  
+		  Insert(Root->Rchild,p);                    	//向右子树中插入结点
+  }
+//向二叉排序树中插入一个元素
+void BinaryTree::Insert(int item)
+  {	  BinTreeNode *p = new BinTreeNode;
+	  p->data = item;
+     Insert(Root,p);
+  }
+//前序遍历以current为根的子树
+void BinaryTree::PreOrder(BinTreeNode *current)
+  {  if(current!= NULL)
+	   { //current == NULL，即到达叶结点，是递归终止条件
+        cout << current->data <<"";    			//访问根结点，用输出语句暂代
+        PreOrder(current->Lchild);                	//前序遍历左子树
+        PreOrder(current->Rchild);               		//前序遍历右子树
+    }
+  }
+//中序遍历当前二叉树
+void BinaryTree::InOrder()
+  { InOrder(Root);}
+//中序遍历以current为根的子树
+void BinaryTree::InOrder(BinTreeNode *current)
+  {	  if(current!=NULL)  					//current == NULL是递归终止条件
+	   { InOrder(current->Lchild);          	//中序遍历左子树
+        cout << current->data <<"";       	//访问根结点，用输出语句暂代
+        InOrder(current->Rchild);           	//中序遍历右子树
+     }
+}
+void BinaryTree::Print()
+  {	 cout <<"前序遍历: ";
+	 PreOrder();
+	 cout << endl;
+	 cout <<"中序遍历: ";
+    InOrder();
+	 cout << endl;
+  }
+void main()
+  {	  BinaryTree Bt;         			//定义二叉树对象
+	  int n,*b,i;	                       	//定义数组指针b，用于存放元素
+	  int select = 0,flag =1;
+	  while(flag)
+	   {	  cout <<"1.  建立二叉排序树"<< endl;
+		  cout <<"2.  插入元素"<< endl;
+		  cout <<"3.  退出"<< endl;
+		  cout <<"请选择(1-3): ";
+		  cin >> select;
+		  switch(select)
+		   { case 1:
+			    {  cout <<"请输入元素个数: ";
+	              cin >> n; 
+	              b = new int[n];
+                 cout <<"请输入元素: ";
+                 for(i = 0;i < n;i++)
+		             cin >> b[i];
+	              Bt.CreatBst(b,n);         	//以数组b为元素，建立二叉排序树
+                 Bt.Print();
+				   break;
+			  }
+		       case 2:
+			     {  int item;
+				    cout <<"请输入要插入元素: ";
+				    cin >> item;
+	               Bt.Insert(item);
+	               Bt.Print();
+				    break;
+			    }
+		      case 3:
+			      flag = 0;break;
+		  }
+	  }
+}

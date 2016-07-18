@@ -1,0 +1,106 @@
+#include <iostream>
+using namespace std;
+class BTree;						//BTree类的预先声明
+class BinTreeNode   				//二叉树结点类的定义
+ 	{	friend class BTree;
+ 		char data;				//结点的数据域
+ 		BinTreeNode *Lchild;		//左孩子指针
+ 		BinTreeNode *Rchild; 	//右孩子指针
+			BinTreeNode *Parent;   	//双亲结点指针
+ 	public：
+			BinTreeNode( ){Lchild = Rchild = NULL;}
+ 		BinTreeNode(char item)
+ 		{	data = item;
+ 			Lchild = Rchild = NULL;
+ 		}
+ 		BinTreeNode(char value,BinTreeNode *left,BinTreeNode *right);
+ 		void Preorder1(BinTreeNode *root);      	//前序遍历
+ 		BinTreeNode *GetLeft( ){return Lchild;}
+ 	};
+class BTree   									//二叉树类
+ 	{public：
+ 		BTree( ){root = NULL;}     				//构造一棵空的二叉树
+ 		BTree(char value,BinTreeNode *left,BinTreeNode *right);
+ 		//以value为根，left和right为左右子树构造一棵二叉树
+ 		void DeleteAllValues( );    				//清除操作，使变为空树
+ 		int IsEmpty( );      						//判断二叉树是否为空
+ 		BinTreeNode *Find(BinTreeNode *t,char & value)
+ 		void Insert(BinTreeNode *t,char & value);
+ 		void Delete(BinTreeNode *t,char & value);
+ 		void Creat( ){Creat(root);}
+ 		void Creat(BinTreeNode *&root);
+ 		int Like(BinTreeNode *A,BinTreeNode *B);	//判断两棵二叉树是否相似
+ 		void Preorder(BinTreeNode *root);       	//前序遍历
+ 		void InOrder(BinTreeNode *root);			//中序遍历
+ 		void PastOrder(BinTreeNode *root);      	//后序遍历
+ 		void Print(BinTreeNode *root);
+ 		BinTreeNode *GetRoot( ){return root;}
+ 	protected：
+ 		BinTreeNode *root;
+ 	};
+void BTree：：Creat(BinTreeNode *&root)
+ 	{	char ch;
+ 		cin >> ch;
+ 		if(ch ==‘#’) root = NULL;
+ 		else
+ 		{	root = new BinTreeNode;
+ 			root -> data = ch;
+ 			Creat(root -> Lchild);
+ 			Creat(root -> Rchild);
+ 		}
+ 	}
+int BTree：：Like(BinTreeNode *A,BinTreeNode *B)
+ 	{	int same;
+ 		if(!A&&!B)return 1;
+ 		else if((!A&&B)||(A&&!B))return 0;
+ 		else
+ 		{	same = Like(A->Lchild ,B->Lchild);
+ 			if(same)same = Like(A->Rchild,B->Rchild);
+ 			return same;
+ 		}
+ 	}
+void BTree：：Preorder(BinTreeNode *root)      		//前序遍历
+ 	{ if(root != NULL)
+ 		{	cout << root->data <<"  ";
+ 			Preorder(root->Lchild);
+ 			Preorder(root->Rchild);
+ 		}
+ 	}
+void BTree：：InOrder(BinTreeNode *root)				//中序遍历
+ 	{ if(root != NULL)
+ 		{	InOrder(root->Lchild);
+ 			cout << root->data <<"  ";
+ 			InOrder(root->Rchild);
+ 		}
+ 	}
+void BTree：：PastOrder(BinTreeNode *root)      		//后序遍历
+ 	{ if(root != NULL) 
+ 		{	PastOrder(root->Lchild);
+ 			PastOrder(root->Rchild);
+ 			cout << root->data <<"  ";
+ 		}
+ 	}
+void BTree：：Print(BinTreeNode *root)
+ 	{ 	cout <<"前序遍历结果：";
+ 		Preorder(root);
+ 		cout <<"\n 中序遍历结果：";
+ 		InOrder(root);
+ 		cout <<"\n 后序遍历结果：";
+ 		PastOrder(root);
+ 		cout << endl;
+ 	}
+void main( )
+ 	{	BTree Bt,Bp;
+ 		BinTreeNode *RootA,*RootB;
+ 		int n;
+ 		cout <<"\n 输入二叉树A：";
+ 		Bt.Creat( );
+ 		RootA = Bt.GetRoot( );
+ 		Bt.Print(RootA);
+ 		cout <<"\n 输入二叉树B：";
+ 		Bp.Creat( );
+ 		RootB = Bp.GetRoot( );
+ 		n = Bt.Like(RootA,RootB);
+ 		if(n == 1)cout <<"判断结果：A与B相似\n";
+ 		else cout <<"判断结果：A与B不相似";
+}

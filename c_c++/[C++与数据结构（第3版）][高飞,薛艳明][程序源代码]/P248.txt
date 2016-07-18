@@ -1,0 +1,133 @@
+#include <iostream>
+using namespace std;
+#include"conio"
+const int MAXVS=10;			//图的最大顶点数
+const int MAXES=50;			//图的最大边数
+template < class T,class VerType > 
+class Graph
+  { private:
+		int curNum;               	//当前图中的顶点数
+		int n;                      	//给定图的顶点数
+		int e;                      	//当前图中的边数
+		VerType vex[MAXVS];     	//存放顶点的有关信息
+		T Edge[MAXVS][MAXES];    	//存放顶点与顶点之间边的信息
+		T max;                      	//用于表示权值的权限值
+		int net;                   	//net＝1，表示带权网络图；net＝0，表示不带权值的图
+		int mark;                  	//mark＝1，表示是有向图；mark＝0，表示是无向图
+  public:
+		Graph(); 				//构造空图
+		Graph(int sn,int se,int mark = 0,int net = 0,int max = 1000);	//初始化图
+     	//插入权值为weight的边(v1,v2)
+		virtual void InsertEdge(const int v1,const int v2,T weight = 1);
+		virtual void DeleteVertex(const int v);		//删除顶点v
+		int GetFirstEdge(const int v);				//寻找v的第一个邻接点的位置
+     	//寻找v的当前邻接点的下一个邻接点的位置
+		int GetNextEdge(const int v,int v1); 
+	    	//输入图的顶点和边的信息
+       friend istream &operator >>(istream &in,Graph< T,VerType>&g);
+       //输出图的顶点和边的信息
+		friend ostream &operator <<(ostream &out。Graph< T,VerType>&g); 
+};
+template < class T,class VerType >				//构造空图
+Graph < T,VerType >::Graph()
+  {  n = curNum = 0;
+	  e = 0;
+	  mark = 0;
+	  net = 0; 										//缺省为不带权的无向图
+	  max = 1000;
+  }
+template < class T,class VerType >				//带参数的构造函数
+Graph < T,VerType >::Graph(int sn,int se,int mark,int net,int max)
+  {  n = curNum = sn;
+	  e = se;
+	  Graph < T,VerType >::mark = mark;
+	  Graph < T,VerType >::net = net;
+	  Graph < T,VerType >::max = max;
+  }
+template < class T,class VerType >			//寻找v的第一个邻接点的位置
+int Graph < T,VerType >::GetFirstEdge(const int v)
+  { if(v!= -1)
+	    { for(int k = 0;k < n;k++)
+			if(Edge[v][k]>0&&Edge[v][k]<max||Edge[k][v]>0&&Edge[k][v]<max)
+				return k;
+			if(k >= n)return –1; 				//没有邻接点，返回-1
+	    }
+	  return –1;
+ }
+template < class T,class VerType >			//寻找与v邻接的下一个顶点的位置
+int Graph < T,VerType >::GetNextEdge(const int v,int v1)
+  { if(v!= -1&&v1!= -1)
+	     { for(int k = v1+1;k < n;k++)
+			if(Edge[v][k]>0&&Edge[v][k]<max||Edge[k][v]>0&&Edge[k][v]<max)
+				return k;
+			if(k >= n) return –1;
+	   }
+	  return –1;
+}
+template < class T,class VerType >			//插入一条边
+void Graph < T,VerType >::InsertEdge(const int v1,const int v2,T weight)
+  { if(v1!= -1&&v2!= -1)						//v1和v2是图中的顶点时，插入一条边
+	    {  Edge[v1][v2] = weight;
+		  if(mark==0)Edge[v2][v1] = weight;   	//无向图
+		  e++;									//边数加1
+	    }
+  }
+template < class T,class VerType >  			//删除一个顶点及其邻接的边
+void Graph < T,VerType >::DeleteVertex(const int v)
+{ if(v!= -1)
+	   { for(int k = 0;k < n;k++)                  	//删除所有与v邻接的边
+			if(Edge[v][k]>0&&Edge[v][k]<max||Edge[k][v]>0&&Edge[k][v]<max)
+			 {  if(net == 1)                        	//是带权图时，赋值max
+					Edge[v][k] = Edge[k][v] = max;
+				else Edge[v][k] = Edge[k][v] = 0;//否则赋值0
+				e--;    							//边数减1
+			 }
+			curNum--;            					//当前顶点数减1
+	    }
+}
+template < class T,class VerType > 			//输入图的顶点和边的信息
+istream &operator >>(istream &in,Graph < T,VerType >&g)
+  {  cout <<"Please input the info of the graph:\n";
+	  cout <<"请输入顶点信息:\n";
+	  for(int i = 0;i <g.n;i++)in >> g.vex[i];
+	  cout <<"请输入各顶点之间边关系信息:\n";
+	  for(i = 0;i < g.n;i++)                			//输入各顶点之间的关系值，建立邻接矩阵
+	   {  cout <<"第"<< i+1 <<"顶点:";
+		  for(int j = 0;j < g.n;j++)
+			  in >> g.Edge[i][j];
+	    }
+	  return in;
+}
+template < class T,class VerType >			//输出图的顶点和边的信息
+ostream &operator <<(ostream &out,Graph < T,VerType >&g)
+  {  out <<"输出各顶点信息: ";
+	  for(int i = 0;i < g.n;i++)
+		 out << g.vex[i] <<"  ";         			//输出各个顶点的信息
+     out <<"\n输出各顶点及边信息:\n";
+     for(i = 0;i < g.n;i++)
+	     {  out <<"第"<< i+1 <<"顶点:";
+		   for(int j = 0;j < g.n;j++) 
+			  if(g.Edge[i][j] > 0&&g.Edge[i][j] < g.max)
+				 out <<"("<< i+1 <<","<< j+1 <<")";
+			out << endl;
+	    }
+	  return out;
+   }
+void main()
+  {  Graph < int,int > G1(5,6,0);   			//有向图
+	  int v1,v2;
+	  cin >> G1;                                     	//输入图的信息
+	  cout << G1<< endl;                              	//输出图的信息
+	  int k =G1.GetFirstEdge(2);                   	//求顶点2的第一个邻接点
+	  int next = G1.GetNextEdge(2,k);              	//求顶点2下一个邻接点
+	  cout <<"顶点2的第一个邻接点:"<< k <<"\n";
+	  cout <<"下一个邻接点:"<< next << endl;
+	  cout <<"\n插入一条边,请输入顶点位置v1,v2:";
+	  cin >> v1 >> v2;
+	  G1.InsertEdge(v1-1,v2-1,1);        			//插入一条边
+	  cout << G1 << endl;
+	  cout <<"请输入要删除的顶点:";
+	  cin >> v1;
+	  G1.DeleteVertex(v1-1);						//删除一个顶点
+  cout << G1 << endl;
+}

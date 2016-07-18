@@ -1,0 +1,74 @@
+#include <iostream>
+using namespace std;
+class OrderedList;
+class Node 									//定义数据表中结点类
+  {	    friend class OrderedList;
+	    int key;    								//关键字域
+	    public:
+	    int getKey(){return key;}    				//读取关键字
+	    void setKey (int k){key = k;}   			//修改关键字
+  };
+class OrderedList 							//定义有序顺序表类
+  {	    Node *Element;   						//数据表中存储数据的数组
+	    int ArraySize,CurrentSize; 				//数组最大长度和当前长度
+public:
+       OrderedList(int Size);     				//构造函数
+	    ~OrderedList(){delete []Element;}			//析构函数
+	    void InList();//建立数据表
+       int GetCursize(){return CurrentSize;} 	//返回当前长度
+	    int BinSearch(int x,int low,int high);  	//查找关键字(递归）
+	    int BinSearch1(int x);                  		//查找关键字（迭代）
+};
+void OrderedList::InList()
+  {	  cout <<"请输入数据个数: ";
+	  cin >> CurrentSize;      					//输入表当前长度
+	  cout <<"请输入数据: "<< endl;
+	  for(int i = 0;i < CurrentSize;i++)
+		  cin >> Element[i].key;                  	//输入数据
+  }
+OrderedList::OrderedList(int Size)
+  {	  Element = new Node[Size];
+     ArraySize = Size;
+  }
+int OrderedList::BinSearch(int x,int low,int high)
+  {	  int mid = -1;
+	   if(low <= high)
+	    {  mid =(low+high)/2;
+		   if(Element[mid].getKey()== x)
+			return mid;
+ 		else if(Element[mid].getKey()< x)  //中点的关键字小于给定值，右缩查找区间
+			return BinSearch(x,mid+1,high);
+ 		else return BinSearch(x,low,mid-1);  //中点的关键字大于给定值，左缩查找区间
+      }
+	 else return mid;
+  }
+int OrderedList::BinSearch1(int x)
+  {	  int high = CurrentSize-1,low =0,mid;
+	   while(low <= high)
+	     {  mid =(low+high)/2;
+		   if(Element[mid].getKey()== x)
+			   return mid;
+		   else if(Element[mid].getKey()< x)low = mid+1;
+		   else high = mid-1;
+	    }
+	  return –1;
+  }
+const int Size =100;
+void main()
+  {	  int Target,Location,high;
+	  OrderedList L(Size);        					//定义数据表
+	  L.InList();                                    	//建立数据表
+	  cout <<"请输入要查找的关键字: ";
+	  cin >> Target;                                	//输入要查找的关键字
+	  high = L.GetCursize();
+     if((Location = L.BinSearch(Target,0,high-1))!= -1)//Location为查找到的位置
+    	  cout <<"关键字所在位置: "<< Location+1 << endl;
+	  else
+		  cout <<"没有找到！"<< endl;
+	  cout <<"请输入要查找的关键字: ";
+	  cin >> Target;    							//输入要查找的关键字
+	  if((Location = L.BinSearch1(Target))!= -1) 	//Location为查找到的位置
+    	  cout <<"关键字所在位置: "<< Location+1 << endl;
+	  else
+		  cout <<"没有找到！"<< endl;
+}

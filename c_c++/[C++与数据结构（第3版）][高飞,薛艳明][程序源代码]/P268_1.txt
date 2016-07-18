@@ -1,0 +1,73 @@
+#include <iostream>
+using namespace std;
+class BinaryTree;
+class BinTreeNode								//二叉树结点类的定义
+  {	    int data; 								//结点的数据域
+	    BinTreeNode *Lchild;        					//左孩子指针
+       BinTreeNode *Rchild;      					//右孩子指针
+	    friend class BinaryTree;
+  public:
+	    BinTreeNode(){Lchild = Rchild = NULL;}
+  };
+class BinaryTree     								//二叉排序树类定义
+{ public:
+	    BinaryTree(){ Root = NULL;}   				//构造函数
+       void CreatBst(int a[ ],int n);				//建立二叉排序树
+void Insert(BinTreeNode *&Root,BinTreeNode *p);	//向二叉排序树中插入一个结点
+	    void BSTSearch(int item);
+	    BinTreeNode *Search(BinTreeNode *&Root,int item);	//查找元素
+	    void InOrder(){ InOrder(Root);}                     	//中序遍历二叉排序树
+	    void InOrder(BinTreeNode *current);		//中序遍历以current为根的子树
+  private:
+       BinTreeNode  *Root;
+  };
+//建立二叉排序树
+void BinaryTree::CreatBst(int a[ ],int n)
+  {	  for(int i = 0;i < n;i++)
+	    { BinTreeNode *p = new BinTreeNode;
+	       p->data = a[i];
+		  Insert(Root,p);
+	    }
+  }
+//向二叉排序树中插入一个结点
+void  BinaryTree::Insert(BinTreeNode * &Root,BinTreeNode *p)
+  {  if(Root == NULL)
+		 Root = p;        					//插入新结点
+	  else if(p->data < Root->data)
+		 Insert(Root->Lchild,p);           	//向左子树中插入结点
+	  else  
+		 Insert(Root->Rchild,p);               	//向右子树中插入结点
+}
+void BinaryTree::BSTSearch(int item)
+  {  BinTreeNode *p;
+	  p = Search(Root,item); 				//调用查找元素函数
+	  if(p == NULL) cout <<"没有找到！"<< endl;
+	  else cout <<"已找到！"<< endl;
+  }
+BinTreeNode *BinaryTree::Search(BinTreeNode *&Root,int item)
+  {	  if(Root == NULL)return NULL;
+	  else
+	    {  if(Root->data == item)return Root;
+		   else if(item < Root->data) return Search(Root->Lchild,item);
+		   else return Search(Root->Rchild,item);
+	   }
+}
+//中序遍历以current为根的子树
+void BinaryTree::InOrder(BinTreeNode *current)
+  {	  if(current!= NULL)                 	//current == NULL是递归终止条件
+	   {  InOrder(current->Lchild);          	//中序遍历左子树
+        cout << current->data <<"";      	//访问根结点,用输出语句暂代
+        InOrder(current->Rchild);           	//中序遍历右子树
+      }
+  }
+void main()
+  {	  BinaryTree Bt;     					//定义二叉树对象
+	  int b[] = {38,56,33,29,76,4,67,23},item;	
+ 										//定义数组指针b，用于存放元素
+	  Bt.CreatBst(b,8);     					//以数组b为元素，建立二叉排序树
+  	  cout <<"二叉树中元素:\n";
+	  Bt.InOrder();
+	  cout <<"\n 请输入要查找元素: ";
+	  cin >> item;
+	  Bt.BSTSearch(item);
+}

@@ -1,0 +1,79 @@
+#include <iostream>
+using namespace std;
+class BinTreeNode   				//二叉树结点类的定义
+ 	{	char data;				//结点的数据域
+ 		BinTreeNode *Lchild;		//左孩子指针
+ 		BinTreeNode *Rchild; 	//右孩子指针
+ 		BinTreeNode *root;
+ 	public：
+ 		BinTreeNode( ){root = NULL;}
+ 		void creattree(BinTreeNode *t,char *x);       	//建立二叉树
+ 		BinTreeNode *GetRoot( ){return root;}    	 		//返回根结点指针
+ 		void BinTreeNode：：Preorder(BinTreeNode *Bt)   	//前序遍历
+ 		void BinTreeNode：：inord(BinTreeNode *Bt);     	//中序遍历
+ 		void BinTreeNode：：postord(BinTreeNode *Bt); 	//后序遍历
+ 	};
+void BinTreeNode：：creattree(BinTreeNode *t,char *x)
+ 	{	BinTreeNode *s[10];
+ 		int top = -1;
+ 		BinTreeNode *p;
+ 		int k;
+ 		char ch;
+ 		ch =*x;
+ 		while(ch!=‘#‘)
+ 			{ switch(ch)
+ 				{ case ‘(’： top++;s[top]= p;k =1;break;
+ 				  case ‘)’： top--;break;
+ 				  case ‘,’： k = 2;break;
+ 				  default： p = new BinTreeNode;
+ 							p -> data = ch;p -> Lchild = p -> Rchild = NULL;
+ 				  if(root == NULL)
+ 					 root = p;
+ 				  else
+ 					{ switch(k)
+							{ case 1：s[top]->Lchild = p;break;
+							case 2：s[top]->Rchild = p;break;
+				    			}
+			    			}
+		    			}
+		 		ch =*++x;
+	  		}
+ 	}
+void BinTreeNode：：Preorder(BinTreeNode *root)		//前序遍历
+ 	{if(root != NULL)
+ 		{	cout << root-> data <<"  ";
+ 			Preorder(root->Lchild);
+ 			Preorder(root->Rchild);
+ 		}
+ 	}
+void BinTreeNode：：inord(BinTreeNode *Bt)     		//中序遍历
+ 	{if(Bt!= NULL)
+ 		{	inord(Bt->Lchild);
+ 			cout << Bt->data <<"  ";
+ 			inord(Bt->Rchild);
+ 		}
+ 	}
+void BinTreeNode：：postord(BinTreeNode *Bt)    		//后序遍历
+ 	{if(Bt!= NULL)
+ 		{	postord(Bt->Lchild);
+ 			postord(Bt->Rchild);
+ 			cout << Bt->data <<"  ";
+ 		}
+ 	}
+void main( )
+ 	{	BinTreeNode Bt,*Root;     					//定义二叉树对象
+ 		char b[20]; 							//定义数组，存放广义表
+ 		cout <<"请输入二叉树，以‘#’字符结束："<< endl; //输入广义表，以‘#’ 字符结束
+ 		cin >> b; 
+ 		Bt.creattree(&Bt,b);   				//调建立二叉树函数
+ 		Root = Bt.GetRoot( );       			//求根结点指针
+ 		cout << endl;
+ 		cout <<"前序遍历：";
+ 		Bt.Preorder(Root);
+ 		cout << endl;
+ 		cout <<"中序遍历：";
+ 	 	Bt.inord(Root);
+ 		cout << endl;
+ 		cout <<"后序遍历：";
+ 		Bt.postord(Root);
+ 	}
